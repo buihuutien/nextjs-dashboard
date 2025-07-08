@@ -60,6 +60,7 @@ export const createInvoice = async (prevState: State, formData: FormData) => {
     `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
+    console.error("Error while creating invoice", error);
     return {
       message: "Database Error: Failed to Create Invoice.",
     };
@@ -75,7 +76,7 @@ export const updateInvoice = async (
   formData: FormData
 ) => {
   try {
-    const validatedFields = CreateInvoice.safeParse({
+    const validatedFields = UpdateInvoice.safeParse({
       customerId: formData.get("customerId"),
       amount: formData.get("amount"),
       status: formData.get("status"),
@@ -98,8 +99,8 @@ export const updateInvoice = async (
     WHERE id = ${id}
   `;
   } catch (error) {
-    console.error("Error creating invoice:", error);
-    throw error;
+    console.error("Error Update invoice:", error);
+    return { message: "Error while Update Invoice." };
   }
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
@@ -113,7 +114,6 @@ export const deleteInvoice = async (id: string) => {
   `;
   } catch (error) {
     console.error("Error creating invoice:", error);
-    throw error;
   }
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
